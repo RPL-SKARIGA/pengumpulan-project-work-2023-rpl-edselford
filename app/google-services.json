@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "831842399460",
+    "project_id": "e-wallet-401511",
+    "storage_bucket": "e-wallet-401511.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:831842399460:android:0ae52c86ba791e143028f1",
+        "android_client_info": {
+          "package_name": "com.edselmustapa.mywallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "831842399460-iviaacvc4gue9lgjuasff2qfm3vn80ua.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.edselmustapa.mywallet",
+            "certificate_hash": "f5ec888a96e4f9dd0c7091f9f74ea7f92d3bafda"
+          }
+        },
+        {
+          "client_id": "831842399460-e8fplgd8p6c1kt7t2jih4blknamf0uh8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgjKDtyjonmkIHNWpZvE001KBF7YQ8960"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "831842399460-8mq3qlip5ks6320ja7006ikbi0bm3c3n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
