@@ -1,0 +1,51 @@
+package com.edselmustapa.mywallet.auth
+
+import android.app.Activity
+import android.content.Context
+import android.widget.Toast
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import com.google.firebase.auth.OAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+
+class GithubAuth {
+    val provider = OAuthProvider.newBuilder("github.com")
+    fun signIn(context: Context, onSuccess: (userData: UserData) -> Unit) {
+        val pendingResultTask = Firebase.auth.pendingAuthResult
+        if (pendingResultTask != null) {
+            pendingResultTask
+                .addOnSuccessListener {
+                    println("success")
+                }
+                .addOnFailureListener() {
+                    println("failure")
+                }
+        } else {
+            Firebase.auth.startActivityForSignInWithProvider(context as Activity, provider.build())
+                .addOnSuccessListener {
+                    it.user?.run {
+                        UserData(
+                            userId = uid,
+                            username = displayName ?: "",
+                            email = email ?: "",
+                            profilePictureUrl = photoUrl?.toString(),
+                            userDbId = null,
+                            name = null
+                        )
+                    }?.let { it1 -> onSuccess(it1) }
+                }
+                .addOnFailureListener() { it ->
+                    it.printStackTrace()
+                    println("failure take 2")
+//                    val firebaseUser = Firebase.auth.currentUser!!
+                    Toast.makeText(
+                        context,
+                        "Error - " + it.message,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+        }
+    }
+}

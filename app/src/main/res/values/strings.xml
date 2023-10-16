@@ -2,4 +2,5 @@
     <string name="app_name">MyWallet</string>
     <string name="google_cloud_server_client_id" translatable="false">831842399460-iviaacvc4gue9lgjuasff2qfm3vn80ua.apps.googleusercontent.com</string>
     <string name="web_client_id">831842399460-e8fplgd8p6c1kt7t2jih4blknamf0uh8.apps.googleusercontent.com</string>
+    <string name="api_url">192.168.0.5:3000</string>
 </resources>

@@ -40,9 +40,9 @@ import com.edselmustapa.mywallet.auth.UserData
 @Composable
 fun SignInScreen(
     state: SignInState,
-    userData: UserData?,
-    onSignInClick: () -> Unit,
-    onSignOutClick: () -> Unit
+    loading: Boolean,
+    onGoogleSignInClick: () -> Unit,
+    onGithubSignInClick: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -66,7 +66,8 @@ fun SignInScreen(
                 modifier = Modifier.padding(bottom = 50.dp)
             )
             Button(
-                onClick = {},
+                enabled = !loading,
+                onClick = onGithubSignInClick,
                 shape = RoundedCornerShape(5.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xff24292f),
@@ -86,7 +87,8 @@ fun SignInScreen(
             }
             Spacer(modifier = Modifier.height(10.dp))
             Button(
-                onClick = onSignInClick,
+                enabled = !loading,
+                onClick = onGoogleSignInClick,
                 shape = RoundedCornerShape(5.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White,
