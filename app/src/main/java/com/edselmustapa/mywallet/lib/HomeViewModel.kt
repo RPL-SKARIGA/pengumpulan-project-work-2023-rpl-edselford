@@ -1,13 +1,9 @@
 package com.edselmustapa.mywallet.lib
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.edselmustapa.mywallet.auth.UserData
-import com.edselmustapa.mywallet.service.UserService
 import com.edselmustapa.mywallet.service.Wallet
 import com.edselmustapa.mywallet.service.WalletService
 import com.google.firebase.auth.ktx.auth

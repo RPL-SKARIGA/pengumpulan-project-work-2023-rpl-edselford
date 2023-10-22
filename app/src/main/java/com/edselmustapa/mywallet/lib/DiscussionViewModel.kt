@@ -1,7 +1,6 @@
 package com.edselmustapa.mywallet.lib
 
 import android.annotation.SuppressLint
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.edselmustapa.mywallet.service.Answer
@@ -73,7 +72,7 @@ class DiscussionViewModel : ViewModel() {
         viewModelScope.launch {
             _sendLoading.value = true
             val currentDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-            currentDate.timeZone = TimeZone.getTimeZone("CET")
+            currentDate.timeZone = TimeZone.getTimeZone("GMT+7")
             discussionService.sendAnswer(
                 questionId, owner, currentDate.format(Date()), content, email
             )
@@ -83,4 +82,22 @@ class DiscussionViewModel : ViewModel() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
+    fun createDiscussion(
+        topic: String,
+        content: String,
+        email: String,
+        callback: suspend () -> Unit
+    ) {
+        viewModelScope.launch {
+            _sendLoading.value = true
+            val dateFormat = SimpleDateFormat("dd MMMM yyyy 'at' hh:mm")
+            dateFormat.timeZone = TimeZone.getTimeZone("GMT+7")
+
+            discussionService.createDiscussion(topic, content, email, dateFormat.format(Date()))
+            refresh()
+            callback()
+            _sendLoading.value = false
+        }
+    }
 }

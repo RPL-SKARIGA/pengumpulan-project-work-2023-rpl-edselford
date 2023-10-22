@@ -35,6 +35,22 @@ class DiscussionService {
             owner, dateAnswered, content
         )
     )
+
+    suspend fun createDiscussion(
+        topic: String,
+        content: String,
+        email: String,
+        asked: String,
+    ) = repo.sendAnswer(
+        DiscussionRequest(
+            "createDiscussion",
+            topic = topic,
+            content = content,
+            email = email,
+            asked = asked
+
+        )
+    )
 }
 
 interface DiscussionRepo {
@@ -52,6 +68,11 @@ interface DiscussionRepo {
     suspend fun sendAnswer(
         @Body answerReq: DiscussionRequest = DiscussionRequest("sendAnswer")
     ): AnswerResponse
+
+    @POST("discussion")
+    suspend fun createDiscussion(
+        @Body discussReq: DiscussionRequest = DiscussionRequest("createDiscussion")
+    ): AnswerResponse
 }
 
 
@@ -64,6 +85,9 @@ data class DiscussionRequest(
     val owner: String = "",
     val dateAnswered: String = "",
     val content: String = "",
+
+    val topic: String = "",
+    val asked: String = ""
 
     )
 

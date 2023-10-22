@@ -3,9 +3,6 @@ package com.edselmustapa.mywallet.auth
 import android.app.Activity
 import android.content.Context
 import android.widget.Toast
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase

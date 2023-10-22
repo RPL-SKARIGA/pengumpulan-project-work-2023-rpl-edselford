@@ -6,11 +6,9 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import com.google.android.gms.auth.api.identity.Identity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
@@ -25,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -45,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
@@ -57,14 +53,12 @@ import com.edselmustapa.mywallet.auth.GithubAuth
 import com.edselmustapa.mywallet.auth.GoogleAuthUiClient
 import com.edselmustapa.mywallet.auth.SignInViewModel
 import com.edselmustapa.mywallet.graph.HomeNavigationGraph
-import com.edselmustapa.mywallet.lib.HomeViewModel
 import com.edselmustapa.mywallet.service.UserService
 import com.edselmustapa.mywallet.ui.theme.MyWalletTheme
-import com.edselmustapa.mywallet.view.HomeScreen
-import kotlinx.coroutines.launch
 import com.edselmustapa.mywallet.view.SignInScreen
 import com.example.compose.AppTheme
-import kotlin.math.sign
+import com.google.android.gms.auth.api.identity.Identity
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -287,7 +281,7 @@ class MainActivity : ComponentActivity() {
 
     @SuppressLint("ServiceCast")
     private fun isInternetAvailable(context: Context): Boolean {
-        var result = false
+        val result: Boolean
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkCapabilities = connectivityManager.activeNetwork ?: return false

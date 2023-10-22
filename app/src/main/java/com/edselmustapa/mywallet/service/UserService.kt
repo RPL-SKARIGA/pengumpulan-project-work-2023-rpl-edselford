@@ -1,8 +1,5 @@
 package com.edselmustapa.mywallet.service
 
-import android.util.Log
-import androidx.compose.ui.res.stringResource
-import com.edselmustapa.mywallet.R
 import com.edselmustapa.mywallet.config.URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -35,6 +32,11 @@ class UserService {
             UserResponse("", "", "")
         }
     }
+
+    suspend fun users(): List<User> = repo.users(UserRequest(action = "allUser"))
+
+    suspend fun search(keyword: String): List<User> =
+        repo.users(UserRequest(action = "searchByName", keyword = keyword))
 }
 
 interface UserRepo {
@@ -43,13 +45,18 @@ interface UserRepo {
 
     @POST("user")
     suspend fun user(@Body request: UserRequest): UserResponse
+
+    @POST("user")
+    suspend fun users(@Body request: UserRequest): List<User>
+
 }
 
 data class RegisterRequest(
     val username: String,
     val name: String,
-    val email: String
-)
+    val email: String,
+
+    )
 
 data class RegisterResponse(
     val acknowledged: Boolean,
@@ -58,11 +65,22 @@ data class RegisterResponse(
 )
 
 data class UserRequest(
-    val email: String
+    val action: String = "",
+
+    val email: String = "",
+    val keyword: String = ""
 )
 
 data class UserResponse(
     val user_id: String,
+    val image: String,
+    val username: String
+)
+
+data class User(
+    val _id: String,
+    val name: String,
+    val email: String,
     val image: String,
     val username: String
 )

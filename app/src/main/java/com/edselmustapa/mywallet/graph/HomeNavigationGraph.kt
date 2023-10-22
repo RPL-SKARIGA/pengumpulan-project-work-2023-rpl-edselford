@@ -1,16 +1,11 @@
 package com.edselmustapa.mywallet.graph
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,12 +18,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.internal.composableLambda
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -42,11 +34,12 @@ import androidx.navigation.navArgument
 import com.edselmustapa.mywallet.auth.UserData
 import com.edselmustapa.mywallet.lib.DiscussionViewModel
 import com.edselmustapa.mywallet.lib.HomeViewModel
+import com.edselmustapa.mywallet.lib.TransferViewModel
 import com.edselmustapa.mywallet.view.ChatScreen
 import com.edselmustapa.mywallet.view.CreateDiscussionScreen
 import com.edselmustapa.mywallet.view.DiscussionScreen
 import com.edselmustapa.mywallet.view.HomeScreen
-import kotlinx.coroutines.launch
+import com.edselmustapa.mywallet.view.TransferScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -60,6 +53,7 @@ fun HomeNavigationGraph(
     val navController = rememberNavController()
     val homeViewModel = HomeViewModel(context)
     val discussionViewModel = DiscussionViewModel()
+    val transferViewModel = TransferViewModel()
 
 
     Scaffold(
@@ -126,6 +120,9 @@ fun HomeNavigationGraph(
             composable(Route.Dashboard.route) {
                 HomeScreen(navController, onLogoutClick, userData, homeViewModel)
 
+            }
+            composable(Route.Transfer.route) {
+                TransferScreen(navController, transferViewModel, homeViewModel)
             }
             composable(Route.Discussion.route) {
                 DiscussionScreen(navController, discussionViewModel)

@@ -14,18 +14,4 @@ data class UserData (
     val username: String,
     val email: String,
     val profilePictureUrl: String?
-) {
-    companion object {
-        fun fromFirebase(user: FirebaseUser?): UserData? {
-            if (user == null) return null
-            return UserData(
-                userId = user.uid,
-                userDbId = null,
-                name = null,
-                username = user.displayName ?: "",
-                email = user.email ?: "",
-                profilePictureUrl = user.photoUrl.toString()
-            )
-        }
-    }
-}
+)
