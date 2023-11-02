@@ -58,10 +58,14 @@ import com.edselmustapa.mywallet.ui.theme.MyWalletTheme
 import com.edselmustapa.mywallet.view.SignInScreen
 import com.example.compose.AppTheme
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.appcheck.debug.internal.DebugAppCheckProvider
+import com.google.firebase.appcheck.ktx.appCheck
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.initialize
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-
     private val googleAuthUiClient by lazy {
         GoogleAuthUiClient(
             context = applicationContext,
@@ -72,6 +76,11 @@ class MainActivity : ComponentActivity() {
     private val githubAuth = GithubAuth()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Firebase.initialize(this)
+        Firebase.appCheck.installAppCheckProviderFactory(
+            DebugAppCheckProviderFactory.getInstance()
+        )
+
         super.onCreate(savedInstanceState)
         setContent {
             val context = LocalContext.current
@@ -215,8 +224,7 @@ class MainActivity : ComponentActivity() {
                                                 launcher.launch(
                                                     IntentSenderRequest.Builder(
                                                         signInIntentSender ?: return@launch
-                                                    )
-                                                        .build()
+                                                    ).build()
                                                 )
                                             }
                                         },

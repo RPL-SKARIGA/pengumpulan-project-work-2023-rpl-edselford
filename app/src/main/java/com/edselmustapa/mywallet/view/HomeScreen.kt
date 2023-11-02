@@ -2,9 +2,11 @@ package com.edselmustapa.mywallet.view
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem as Lists
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -67,6 +70,7 @@ fun HomeScreen(
 ) {
     val loading by viewModel.loading.collectAsState()
     val wallet by viewModel.wallet.collectAsState()
+    val transaction by viewModel.transaction.collectAsState()
 
     val pullRefreshState =
         rememberPullRefreshState(refreshing = loading, onRefresh = { viewModel.refresh() })
@@ -175,10 +179,50 @@ fun HomeScreen(
 
                 val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
 
+                Box {
+                    Image(
+                        painter = painterResource(id = R.drawable.card_1),
+                        contentDescription = "",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Text(
+                        "**** **** **** 2345",
+                        style = MaterialTheme.typography.headlineLarge
+                            .copy(color = MaterialTheme.colorScheme.background),
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 30.dp)
+                    )
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(30.dp)
+                    ) {
+                        Text(
+                            "Balance",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                color = MaterialTheme.colorScheme.background,
+                                fontWeight = FontWeight.Normal
+                            )
+                        )
+                        Text(
+                            "Rp." + DecimalFormat("#,###")
+                                .format(wallet.wallet),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                color = MaterialTheme.colorScheme.background,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(2000.dp))
+
 //                HomeCard(
-//                    containerColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
-//                    contentColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimaryContainer,
-//                    title = "Your Wallet $loading",
+//                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+//                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+//                    title = "Your Wallet",
 //                    value = "Rp." + DecimalFormat("#,###")
 //                        .format(wallet.wallet),
 //                    description = "+20.1% from last month",
@@ -192,10 +236,10 @@ fun HomeScreen(
 //                    shimmerInstance = shimmerInstance
 //                )
 //                HomeCard(
-//                    containerColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondaryContainer,
-//                    contentColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSecondaryContainer,
+//                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+//                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
 //                    title = "Transaction",
-//                    value = "3 Times",
+//                    value = "${transaction.size} Times",
 //                    description = "+180.1% from last month",
 //                    icon = {
 //                        Icon(
@@ -207,10 +251,13 @@ fun HomeScreen(
 //                    shimmerInstance = shimmerInstance
 //                )
 //                HomeCard(
-//                    containerColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.tertiaryContainer,
-//                    contentColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onTertiaryContainer,
+//                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+//                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
 //                    title = "Income",
-//                    value = "Rp100.000",
+//                    value = "Rp." + DecimalFormat("#,###")
+//                        .format(transaction.fold(0) {a,b ->
+//                            if (!b.isSender) a + b.amount else a
+//                        }),
 //                    description = "+19% from last month",
 //                    icon = {
 //                        Icon(
@@ -222,10 +269,13 @@ fun HomeScreen(
 //                    shimmerInstance = shimmerInstance
 //                )
 //                HomeCard(
-//                    containerColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.errorContainer,
-//                    contentColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onErrorContainer,
+//                    containerColor = MaterialTheme.colorScheme.errorContainer,
+//                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
 //                    title = "Expenses",
-//                    value = "Rp20.000",
+//                    value = "Rp." + DecimalFormat("#,###")
+//                        .format(transaction.fold(0) {a,b ->
+//                            if (b.isSender) a + b.amount else a
+//                        }),
 //                    description = "+201 since last hour",
 //                    icon = {
 //                        Icon(
@@ -236,69 +286,6 @@ fun HomeScreen(
 //                    loading = loading,
 //                    shimmerInstance = shimmerInstance
 //                )
-
-
-                HomeCard(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    title = "Your Wallet ${scrollState.value}",
-                    value = "Rp." + DecimalFormat("#,###")
-                        .format(wallet.wallet),
-                    description = "+20.1% from last month",
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_attach_money_24),
-                            contentDescription = ""
-                        )
-                    },
-                    loading = loading,
-                    shimmerInstance = shimmerInstance
-                )
-                HomeCard(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    title = "Transaction",
-                    value = "3 Times",
-                    description = "+180.1% from last month",
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_supervisor_account_24),
-                            contentDescription = ""
-                        )
-                    },
-                    loading = loading,
-                    shimmerInstance = shimmerInstance
-                )
-                HomeCard(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    title = "Income",
-                    value = "Rp100.000",
-                    description = "+19% from last month",
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_credit_card_24),
-                            contentDescription = ""
-                        )
-                    },
-                    loading = loading,
-                    shimmerInstance = shimmerInstance
-                )
-                HomeCard(
-                    containerColor =MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                    title = "Expenses",
-                    value = "Rp20.000",
-                    description = "+201 since last hour",
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_short_text_24),
-                            contentDescription = ""
-                        )
-                    },
-                    loading = loading,
-                    shimmerInstance = shimmerInstance
-                )
 
                 Spacer(modifier = Modifier.height(100.dp))
             }

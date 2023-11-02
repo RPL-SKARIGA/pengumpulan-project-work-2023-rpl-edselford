@@ -5,6 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
+import java.util.Date
 
 class TransferService {
     private val retrofit: Retrofit = Retrofit.Builder()
@@ -19,11 +20,16 @@ class TransferService {
         repo.transfer(
             TransferRequest(email, toId, amount, message)
         )
+
+    suspend fun transaction(email: String) = repo.transaction(TransactionRequest(email))
 }
 
 interface TransferRepo {
     @POST("transfer")
     suspend fun transfer(@Body request: TransferRequest): TransferResponse
+
+    @POST("transaction")
+    suspend fun transaction(@Body request: TransactionRequest): List<Transaction>
 }
 
 data class TransferResponse(
@@ -37,3 +43,23 @@ data class TransferRequest(
     val amount: Number,
     val message: String
 )
+
+data class TransactionRequest(
+    val email: String
+)
+
+data class Transaction(
+    val _id: String,
+    val sender: String,
+    val receiver: String,
+    val type: String,
+    val amount: Long,
+    val success: Boolean,
+    val date: Date,
+    val message: String,
+    val isSender: Boolean
+) {
+    override fun toString(): String {
+        return "{$_id, $sender, $receiver, $type, $amount, $success, $date, $message}"
+    }
+}

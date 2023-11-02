@@ -33,7 +33,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItem as Lists
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -60,6 +60,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
@@ -77,7 +78,9 @@ import com.google.firebase.ktx.Firebase
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -101,6 +104,7 @@ fun TransferScreen(
     var password by remember { mutableStateOf("") }
     val loading by viewModel.loading.collectAsState()
     val user = Firebase.auth.currentUser
+    val wallet by homeViewModel.wallet.collectAsState()
 
     val searchLoading by viewModel.searchLoading.collectAsState()
     val focusManager = LocalFocusManager.current
@@ -121,6 +125,14 @@ fun TransferScreen(
                 },
                 actions = {
                     IconButton(onClick = {
+                        if (amount.toLong() > wallet.wallet) {
+                            Toast.makeText(
+                                context,
+                                "Not enough money",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            return@IconButton
+                        }
                         if (selected == null) {
                             Toast.makeText(
                                 context,
@@ -184,7 +196,7 @@ fun TransferScreen(
                 BasicTextField(
                     value = amount,
                     onValueChange = {
-                        if (it.length <= Long.MAX_VALUE.toString().length && it.isDigitsOnly()) {
+                        if (it.length <= Long.MAX_VALUE.toString().length - 2 && it.isDigitsOnly()) {
                             amount = it
                         }
                     },
@@ -199,7 +211,19 @@ fun TransferScreen(
                     modifier = Modifier.fillMaxWidth(),
                     cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
                     visualTransformation = NumberCommaTransformation()
-                )
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        it()
+                        Text(
+                            "Wallet: Rp." + DecimalFormat("#,###")
+                                .format(wallet.wallet),
+                            style = TextStyle(color = MaterialTheme.colorScheme.outline)
+                        )
+                    }
+                }
             }
             Divider()
             Row(
@@ -239,22 +263,22 @@ fun TransferScreen(
                     if (user != null) {
                         if (it.email == user.email) return@forEach
                     }
-                    androidx.compose.material3.ListItem(
+                    Lists(
                         modifier = Modifier.clickable {
                             selected = it
                             viewModel.search("")
                             focusManager.clearFocus()
                         },
-                        headlineText = { Text(it.name) },
-                        supportingText = { Text(it.email) }
+                        headlineContent = { Text(it.name) },
+                        supportingContent = { Text(it.email) }
                     )
                 }
             }
 
             if (searchLoading) {
-                androidx.compose.material3.ListItem(
-                    headlineText = { Text("Loading") },
-                    supportingText = { Text("Please wait..") },
+                Lists(
+                    headlineContent = { Text("Loading") },
+                    supportingContent = { Text("Please wait..") },
                     leadingContent = {
                         CircularProgressIndicator()
                     }

@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "831842399460-iviaacvc4gue9lgjuasff2qfm3vn80ua.apps.googleusercontent.com",
+          "client_id": "831842399460-eb72bpr1cshulvls7e521m407sfk3prg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.edselmustapa.mywallet",
-            "certificate_hash": "f5ec888a96e4f9dd0c7091f9f74ea7f92d3bafda"
+            "certificate_hash": "29893b404e257ad5eb1b10a5e8fa130f2a9d43c0"
           }
         },
         {

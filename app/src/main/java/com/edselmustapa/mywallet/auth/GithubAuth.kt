@@ -8,7 +8,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class GithubAuth {
-    val provider = OAuthProvider.newBuilder("github.com")
+    private val provider = OAuthProvider.newBuilder("github.com")
     fun signIn(context: Context, onSuccess: (userData: UserData) -> Unit) {
         val pendingResultTask = Firebase.auth.pendingAuthResult
         if (pendingResultTask != null) {
@@ -33,10 +33,9 @@ class GithubAuth {
                         )
                     }?.let { it1 -> onSuccess(it1) }
                 }
-                .addOnFailureListener() { it ->
+                .addOnFailureListener { it ->
                     it.printStackTrace()
-                    println("failure take 2")
-//                    val firebaseUser = Firebase.auth.currentUser!!
+
                     Toast.makeText(
                         context,
                         "Error - " + it.message,

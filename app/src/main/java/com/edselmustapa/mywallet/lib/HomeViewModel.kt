@@ -1,9 +1,13 @@
 package com.edselmustapa.mywallet.lib
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.edselmustapa.mywallet.service.Transaction
+import com.edselmustapa.mywallet.service.TransferService
 import com.edselmustapa.mywallet.service.Wallet
 import com.edselmustapa.mywallet.service.WalletService
 import com.google.firebase.auth.ktx.auth
@@ -15,6 +19,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(val context: Context) : ViewModel() {
     private val walletService = WalletService()
+    private val transferService = TransferService()
     private val user = Firebase.auth.currentUser
 
     private val _loading = MutableStateFlow(false)
@@ -22,6 +27,9 @@ class HomeViewModel(val context: Context) : ViewModel() {
 
     private val _wallet = MutableStateFlow(Wallet(null, "", 0))
     val wallet = _wallet.asStateFlow()
+
+    private val _transaction = MutableStateFlow(emptyList<Transaction>())
+    val transaction = _transaction.asStateFlow()
 
     init {
         refresh()
@@ -36,6 +44,12 @@ class HomeViewModel(val context: Context) : ViewModel() {
                 } catch (e: Exception) {
                     Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                     Wallet("", "", 0)
+                }
+                _transaction.value = try {
+                    transferService.transaction(user.email ?: "")
+                } catch(e: Exception) {
+                    Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                    emptyList()
                 }
                 delay(1000)
                 _loading.value = false

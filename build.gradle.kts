@@ -9,3 +9,4 @@ plugins {
     id("org.jetbrains.kotlin.android") version "1.8.10" apply false
     id("com.google.gms.google-services") version "4.4.0" apply false
 }
+val material3Version by extra("1.1.2")

@@ -160,6 +160,9 @@ fun RowScope.AddItem(
             )
         ),
         onClick = {
+            if (currentDestination != null && screen.route == currentDestination.route)
+                return@NavigationBarItem
+
             navController.navigate(screen.route) {
                 popUpTo(navController.graph.findStartDestination().id)
                 launchSingleTop = true
