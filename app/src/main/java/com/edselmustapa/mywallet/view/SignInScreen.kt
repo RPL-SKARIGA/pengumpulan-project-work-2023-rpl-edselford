@@ -33,7 +33,6 @@ import com.edselmustapa.mywallet.R
 import com.edselmustapa.mywallet.auth.SignInState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInScreen(
     state: SignInState,

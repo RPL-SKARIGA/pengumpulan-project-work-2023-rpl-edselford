@@ -16,7 +16,7 @@ class GithubAuth {
                 .addOnSuccessListener {
                     println("success")
                 }
-                .addOnFailureListener() {
+                .addOnFailureListener {
                     println("failure")
                 }
         } else {
@@ -33,7 +33,7 @@ class GithubAuth {
                         )
                     }?.let { it1 -> onSuccess(it1) }
                 }
-                .addOnFailureListener { it ->
+                .addOnFailureListener {
                     it.printStackTrace()
 
                     Toast.makeText(

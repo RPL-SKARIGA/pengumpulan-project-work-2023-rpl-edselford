@@ -1,9 +1,7 @@
 package com.edselmustapa.mywallet.lib
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.edselmustapa.mywallet.service.Transaction

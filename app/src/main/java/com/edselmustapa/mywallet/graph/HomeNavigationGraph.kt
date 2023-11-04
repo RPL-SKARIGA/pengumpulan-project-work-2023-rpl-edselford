@@ -34,6 +34,7 @@ import androidx.navigation.navArgument
 import com.edselmustapa.mywallet.auth.UserData
 import com.edselmustapa.mywallet.lib.DiscussionViewModel
 import com.edselmustapa.mywallet.lib.HomeViewModel
+import com.edselmustapa.mywallet.lib.PreferencesViewModel
 import com.edselmustapa.mywallet.lib.TransferViewModel
 import com.edselmustapa.mywallet.view.ChatScreen
 import com.edselmustapa.mywallet.view.CreateDiscussionScreen
@@ -43,9 +44,9 @@ import com.edselmustapa.mywallet.view.TransferScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun HomeNavigationGraph(
     rootNavController: NavHostController,
+    preferencesViewModel: PreferencesViewModel,
     userData: UserData?,
     onLogoutClick: () -> Unit
 ) {
@@ -118,7 +119,7 @@ fun HomeNavigationGraph(
 
         ) {
             composable(Route.Dashboard.route) {
-                HomeScreen(navController, onLogoutClick, userData, homeViewModel)
+                HomeScreen(navController, onLogoutClick, userData, homeViewModel, preferencesViewModel)
 
             }
             composable(Route.Transfer.route) {

@@ -44,6 +44,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -53,13 +54,13 @@ import com.edselmustapa.mywallet.auth.GithubAuth
 import com.edselmustapa.mywallet.auth.GoogleAuthUiClient
 import com.edselmustapa.mywallet.auth.SignInViewModel
 import com.edselmustapa.mywallet.graph.HomeNavigationGraph
+import com.edselmustapa.mywallet.lib.PreferencesViewModel
 import com.edselmustapa.mywallet.service.UserService
 import com.edselmustapa.mywallet.ui.theme.MyWalletTheme
 import com.edselmustapa.mywallet.view.SignInScreen
-import com.example.compose.AppTheme
+import com.edselmustapa.mywallet.ui.theme.old.AppTheme
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
-import com.google.firebase.appcheck.debug.internal.DebugAppCheckProvider
 import com.google.firebase.appcheck.ktx.appCheck
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
@@ -75,6 +76,7 @@ class MainActivity : ComponentActivity() {
 
     private val githubAuth = GithubAuth()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Firebase.initialize(this)
         Firebase.appCheck.installAppCheckProviderFactory(
@@ -82,11 +84,12 @@ class MainActivity : ComponentActivity() {
         )
 
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         setContent {
             val context = LocalContext.current
-
             var loading by remember { mutableStateOf(false) }
             var isOnline by remember { mutableStateOf(isInternetAvailable(context)) }
+            val preferences = PreferencesViewModel(context)
 
             ColorTheme {
                 Surface(
@@ -166,6 +169,7 @@ class MainActivity : ComponentActivity() {
                                     HomeNavigationGraph(
                                         rootNavController = navController,
                                         userData = googleAuthUiClient.getSignedInUser(),
+                                        preferencesViewModel = preferences,
                                         onLogoutClick = {
                                             lifecycleScope.launch {
                                                 googleAuthUiClient.signOut()
@@ -264,15 +268,10 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-
                         }
                     }
-
-
                 }
-
             }
-
         }
     }
 

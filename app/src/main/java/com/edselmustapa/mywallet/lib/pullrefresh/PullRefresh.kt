@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package androidx.compose.material3.pullrefresh
+package com.edselmustapa.mywallet.lib.pullrefresh
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset

@@ -63,6 +63,9 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.browser:browser:1.6.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-svg:2.5.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -87,4 +90,6 @@ dependencies {
     implementation("com.valentinilk.shimmer:compose-shimmer:1.0.5")
 //    implementation("com.halilibo.compose-richtext:richtext-commonmark:0.17.0")
     implementation("com.github.jeziellago:compose-markdown:0.3.6")
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }

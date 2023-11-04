@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package androidx.compose.material3.pullrefresh
+package com.edselmustapa.mywallet.lib.pullrefresh
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.ui.Modifier

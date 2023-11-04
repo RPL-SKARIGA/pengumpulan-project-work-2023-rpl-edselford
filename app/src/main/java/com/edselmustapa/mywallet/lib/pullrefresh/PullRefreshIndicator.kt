@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package androidx.compose.material3.pullrefresh
+package com.edselmustapa.mywallet.lib.pullrefresh
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.LinearEasing
@@ -90,7 +90,7 @@ fun PullRefreshIndicator(
     ) {
         Crossfade(
             targetState = refreshing,
-            animationSpec = tween(durationMillis = CrossfadeDurationMs)
+            animationSpec = tween(durationMillis = CrossfadeDurationMs), label = ""
         ) { refreshing ->
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -129,7 +129,9 @@ private fun CircularArrowIndicator(
         }
     }
 
-    val alphaState = animateFloatAsState(targetValue = targetAlpha, animationSpec = AlphaTween)
+    val alphaState = animateFloatAsState(targetValue = targetAlpha, animationSpec = AlphaTween,
+        label = ""
+    )
 
     // Empty semantics for tests
     Canvas(modifier.semantics {}) {

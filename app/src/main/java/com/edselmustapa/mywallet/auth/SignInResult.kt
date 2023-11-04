@@ -1,7 +1,5 @@
 package com.edselmustapa.mywallet.auth
 
-import com.google.firebase.auth.FirebaseUser
-
 data class SignInResult (
     val data: UserData?,
     val errorMessage: String?
