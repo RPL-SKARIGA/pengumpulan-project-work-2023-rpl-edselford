@@ -4,7 +4,9 @@ import com.edselmustapa.mywallet.config.URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 class UserService {
     private val retrofit: Retrofit = Retrofit.Builder()
@@ -33,10 +35,10 @@ class UserService {
         }
     }
 
-    suspend fun users(): List<User> = repo.users(UserRequest(action = "allUser"))
+//    suspend fun users(): List<User> = repo.users(UserRequest(action = "allUser"))
 
     suspend fun search(keyword: String): List<User> =
-        repo.users(UserRequest(action = "searchByName", keyword = keyword))
+        repo.searchByName(keyword)
 }
 
 interface UserRepo {
@@ -46,8 +48,8 @@ interface UserRepo {
     @POST("user")
     suspend fun user(@Body request: UserRequest): UserResponse
 
-    @POST("user")
-    suspend fun users(@Body request: UserRequest): List<User>
+    @GET("users/searchbyname")
+    suspend fun searchByName(@Query("keyword") keyword: String): List<User>
 
 }
 

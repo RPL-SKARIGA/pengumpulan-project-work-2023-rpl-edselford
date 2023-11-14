@@ -1,6 +1,7 @@
 package com.edselmustapa.mywallet.graph
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -30,6 +31,20 @@ sealed class Route(
                 contentDescription = ""
             )
         }
+    )
+
+    object TopUp : Route(
+        route = "topup",
+        title = "Top Up",
+        icon = {
+            Icon(imageVector = Icons.Default.Add, contentDescription = "" )
+        }
+    )
+
+    object Activity : Route(
+        route = "activity",
+        title = "Activity",
+        icon = {}
     )
 
     object Discussion : Route(

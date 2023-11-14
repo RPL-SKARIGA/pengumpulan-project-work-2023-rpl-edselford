@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -79,12 +81,20 @@ import com.edselmustapa.mywallet.lib.HomeViewModel
 import com.edselmustapa.mywallet.lib.PreferencesViewModel
 import com.edselmustapa.mywallet.component.CardWallet
 import com.edselmustapa.mywallet.component.ChangeCardBottomSheet
+import com.edselmustapa.mywallet.component.HomeButtons
+import com.edselmustapa.mywallet.component.ShimmerBox
+import com.edselmustapa.mywallet.component.TransactionData
+import com.edselmustapa.mywallet.config.lightColor
+import com.edselmustapa.mywallet.config.rupiah
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
+import java.util.Calendar
+import java.util.Date
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(
@@ -100,12 +110,16 @@ fun HomeScreen(
 ) {
     val loading by viewModel.loading.collectAsState()
     val wallet by viewModel.wallet.collectAsState()
-    val transaction by viewModel.transaction.collectAsState()
+    val expense by viewModel.expense.collectAsState()
+    val income by viewModel.income.collectAsState()
     val setting by preferences.setting.collectAsState()
-    val cardLoading by preferences.loading.collectAsState()
     val view = LocalView.current
-
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+    var openBottomSheet by remember { mutableStateOf(false) }
     val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    val scope = rememberCoroutineScope()
+    var displayTransaction by remember { mutableStateOf("week") }
+
 
     val pullRefreshState =
         rememberPullRefreshState(refreshing = loading, onRefresh = { viewModel.refresh() })
@@ -124,20 +138,14 @@ fun HomeScreen(
         label = ""
     )
 
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
-    var openBottomSheet by remember { mutableStateOf(false) }
-
-    val scope = rememberCoroutineScope()
-
     val cardImages = listOf(
         "card_1" to R.drawable.card_1,
         "card_2" to R.drawable.card_2,
-        "card_3" to R.drawable.card_3
+        "card_3" to R.drawable.card_3,
+        "card_4" to R.drawable.card_4,
+        "card_5" to R.drawable.card_5,
+        "card_6" to R.drawable.card_6
     )
-
-    val lightColor: Pair<Color, Color> =
-        (if (isSystemInDarkTheme()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer) to
-                if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimaryContainer
 
 
     LaunchedEffect(openBottomSheet) {
@@ -154,7 +162,13 @@ fun HomeScreen(
 
     if (openBottomSheet) {
         ChangeCardBottomSheet(
-            dismissRequest = { openBottomSheet = false },
+            dismissRequest = {
+                scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
+                    if (!bottomSheetState.isVisible) {
+                        openBottomSheet = false
+                    }
+                }
+            },
             bottomSheetState,
             cardImages,
             preferences,
@@ -232,10 +246,10 @@ fun HomeScreen(
             )
         }
 
-    ) {
-        Box(modifier = Modifier.padding(it)) {
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding)) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
@@ -245,7 +259,7 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
+                        .padding(horizontal = 10.dp, vertical = 10.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
                     if (userData != null) {
@@ -268,228 +282,85 @@ fun HomeScreen(
                 )
 
 
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
-                            shape = RoundedCornerShape(20.dp)
-                        )
-                        .padding(10.dp)
-                        .horizontalScroll(rememberScrollState())
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        FilledIconButton(
-                            onClick = { /*TODO*/ },
-                            shape = FloatingActionButtonDefaults.shape,
-                            colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = lightColor.first,
-                                contentColor = lightColor.second
-                            ),
-                            modifier = Modifier.size(70.dp)
-                        ) {
-                            Icon(imageVector = Icons.Filled.Add, contentDescription = "")
-                        }
-
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Text(text = "Top Up")
-                    }
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        FilledIconButton(
-                            onClick = { navController.navigate(Route.Transfer.route) },
-                            shape = FloatingActionButtonDefaults.shape,
-                            colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = lightColor.first,
-                                contentColor = lightColor.second
-                            ),
-                            modifier = Modifier.size(70.dp)
-                        ) {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
-                        }
-
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Text(text = "Transfer")
-                    }
-
-                    for (i in 0..1) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            FilledIconButton(
-                                onClick = { },
-                                shape = FloatingActionButtonDefaults.shape,
-                                colors = IconButtonDefaults.filledIconButtonColors(
-                                    containerColor = lightColor.first,
-                                    contentColor = lightColor.second
-                                ),
-                                modifier = Modifier.size(70.dp)
-                            ) {
-//                                Icon(imageVector = Icons.Filled.Send, contentDescription = "")
-                            }
-
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Text(text = "idk")
-                        }
-                    }
-                }
-
+                HomeButtons(loading, navController)
 
                 Box(
                     modifier = Modifier
-                        .height(150.dp)
                         .fillMaxWidth()
-                        .background(
-                            color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
-                            shape = RoundedCornerShape(20.dp)
-                        )
-                        .padding(20.dp)
+                        .padding(top = 10.dp, start = 5.dp)
                 ) {
+                    var dropdown by remember { mutableStateOf(false) }
                     Button(
-                        modifier = Modifier.align(Alignment.TopStart),
-                        onClick = { /*TODO*/ },
+                        onClick = { dropdown = true },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = lightColor.first,
-                            contentColor = lightColor.second
-                        )
+                            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                        contentPadding = PaddingValues(20.dp, 5.dp, 10.dp, 5.dp),
+                        modifier = Modifier.align(Alignment.CenterStart)
                     ) {
-                        Text(text = "This week")
+                        Text(text = if (displayTransaction == "anytime") "Any Time" else "This $displayTransaction")
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
                             contentDescription = ""
                         )
                     }
-                    Row(
+                    DropdownMenu(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.BottomCenter),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        listOf(
-                            "Income" to (transaction.fold(0L) { a, b ->
-                                if (!b.isSender) a + b.amount else a
-                            } to R.drawable.round_trending_up_24),
-                            "Expense" to (transaction.fold(0L) { a, b ->
-                                if (b.isSender) a + b.amount else a
-                            } to R.drawable.round_trending_down_24)
-                        ).forEach { (key, value) ->
-                            Row(
-                                modifier = Modifier.weight(.5f),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = value.second),
-                                    contentDescription = "",
-                                    modifier = Modifier.size(40.dp)
-                                )
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Column {
-                                    Text(key)
-                                    if (loading)
-                                        Box(
-                                            modifier = Modifier
-                                                .shimmer(shimmerInstance)
-                                                .background(
-                                                    color = Color.White.copy(alpha = 1f),
-                                                    shape = RoundedCornerShape(50)
-                                                )
-                                        ) {
-                                            Text(
-                                                "Rp." + DecimalFormat("#,###")
-                                                    .format(1_000_000),
-                                                modifier = Modifier.alpha(0f)
-                                            )
-                                        }
-                                    else
-                                        Text(
-                                            "Rp." + DecimalFormat("#,###")
-                                                .format(value.first)
-                                        )
-                                }
-                            }
-                        }
+                            .width(200.dp),
+                        expanded = dropdown,
+                        onDismissRequest = { dropdown = false }) {
+                        DropdownMenuItem(
+                            text = { Text("anytime") },
+                            onClick = {
+                                displayTransaction = "anytime"
+                                dropdown = false
+                                viewModel.transactionInfo("anytime")
+                            },
+                            modifier = Modifier.height(40.dp)
+                        )
+                        DropdownMenuItem(
+                            text = { Text("month") },
+                            onClick = {
+                                displayTransaction = "month"
+                                dropdown = false
+                                viewModel.transactionInfo("month")
+                            },
+                            modifier = Modifier.height(40.dp)
+                        )
+                        DropdownMenuItem(
+                            text = { Text("week") },
+                            onClick = {
+                                displayTransaction = "week"
+                                dropdown = false
+                                viewModel.transactionInfo("week")
+
+                            },
+                            modifier = Modifier.height(40.dp)
+                        )
                     }
                 }
 
+                Row {
+                    TransactionData(
+                        amount = expense,
+                        text = "Excpense",
+                        modifier = Modifier.weight(.5f),
+                        shimmerInstance = shimmerInstance,
+                        loading = loading
+                    )
+                    TransactionData(
+                        amount = income,
+                        text = "Income",
+                        modifier = Modifier.weight(.5f),
+                        shimmerInstance = shimmerInstance,
+                        loading = loading
+                    )
+                }
+
+
                 Spacer(modifier = Modifier.height(2000.dp))
 
-//                HomeCard(
-//                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-//                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-//                    title = "Your Wallet",
-//                    value = "Rp." + DecimalFormat("#,###")
-//                        .format(wallet.wallet),
-//                    description = "+20.1% from last month",
-//                    icon = {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.baseline_attach_money_24),
-//                            contentDescription = ""
-//                        )
-//                    },
-//                    loading = loading,
-//                    shimmerInstance = shimmerInstance
-//                )
-//                HomeCard(
-//                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-//                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-//                    title = "Transaction",
-//                    value = "${transaction.size} Times",
-//                    description = "+180.1% from last month",
-//                    icon = {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.baseline_supervisor_account_24),
-//                            contentDescription = ""
-//                        )
-//                    },
-//                    loading = loading,
-//                    shimmerInstance = shimmerInstance
-//                )
-//                HomeCard(
-//                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-//                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-//                    title = "Income",
-//                    value = "Rp." + DecimalFormat("#,###")
-//                        .format(transaction.fold(0) {a,b ->
-//                            if (!b.isSender) a + b.amount else a
-//                        }),
-//                    description = "+19% from last month",
-//                    icon = {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.baseline_credit_card_24),
-//                            contentDescription = ""
-//                        )
-//                    },
-//                    loading = loading,
-//                    shimmerInstance = shimmerInstance
-//                )
-//                HomeCard(
-//                    containerColor = MaterialTheme.colorScheme.errorContainer,
-//                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
-//                    title = "Expenses",
-//                    value = "Rp." + DecimalFormat("#,###")
-//                        .format(transaction.fold(0) {a,b ->
-//                            if (b.isSender) a + b.amount else a
-//                        }),
-//                    description = "+201 since last hour",
-//                    icon = {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.baseline_short_text_24),
-//                            contentDescription = ""
-//                        )
-//                    },
-//                    loading = loading,
-//                    shimmerInstance = shimmerInstance
-//                )
-
-                Spacer(modifier = Modifier.height(100.dp))
             }
             PullRefreshIndicator(
                 refreshing = loading,
@@ -499,7 +370,7 @@ fun HomeScreen(
             )
         }
     }
-
-
 }
+
+
 

@@ -92,4 +92,7 @@ dependencies {
     implementation("com.github.jeziellago:compose-markdown:0.3.6")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation("com.patrykandpatrick.vico:compose:1.12.0")
+    implementation("com.patrykandpatrick.vico:compose-m3:1.12.0")
 }

@@ -18,7 +18,7 @@ class WalletService {
 
     suspend fun getWallet(email: String): Wallet {
         return try {
-            val result = repo.get(WalletRequest(email = email))
+            val result = repo.get(WalletRequest(email = email))[0]
             Log.d("RES", listOf(result._id, result.user_id, result.wallet).toString())
             result
         } catch (e: Exception) {
@@ -29,7 +29,7 @@ class WalletService {
 
 interface WalletRepo {
     @POST("wallet")
-    suspend fun get(@Body walletRequest: WalletRequest): Wallet
+    suspend fun get(@Body walletRequest: WalletRequest): List<Wallet>
 }
 
 data class WalletRequest(

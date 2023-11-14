@@ -24,6 +24,7 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.edselmustapa.mywallet.config.Setting
+import com.edselmustapa.mywallet.config.rupiah
 import com.edselmustapa.mywallet.service.Wallet
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -63,7 +64,6 @@ fun CardWallet(
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
             contentDescription = "",
-//                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
         Text(
             "**** **** **** ${
@@ -74,7 +74,7 @@ fun CardWallet(
                 .copy(color = Color.White),
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .padding(start = 30.dp)
+                .padding(start = 30.dp, bottom = 10.dp)
         )
         Column(
             modifier = Modifier
@@ -98,8 +98,7 @@ fun CardWallet(
                         )
                 ) {
                     Text(
-                        "Rp." + DecimalFormat("#,###")
-                            .format(100000),
+                        rupiah(100000),
                         style = MaterialTheme.typography.headlineMedium.copy(
                             color = Color.White,
                             fontWeight = FontWeight.Bold
@@ -109,8 +108,7 @@ fun CardWallet(
                 }
             } else
                 Text(
-                    "Rp." + DecimalFormat("#,###")
-                        .format(wallet.wallet),
+                    rupiah(wallet.wallet),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = Color.White,
                         fontWeight = FontWeight.Bold

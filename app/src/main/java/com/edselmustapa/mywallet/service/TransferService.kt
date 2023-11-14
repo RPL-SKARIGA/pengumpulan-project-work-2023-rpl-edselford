@@ -4,8 +4,10 @@ import com.edselmustapa.mywallet.config.URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 import java.util.Date
+import kotlin.math.floor
 
 class TransferService {
     private val retrofit: Retrofit = Retrofit.Builder()
@@ -16,19 +18,27 @@ class TransferService {
 
     private val repo: TransferRepo = retrofit.create(TransferRepo::class.java)
 
-    suspend fun transfer(email: String, toId: String, amount: Number, message: String) =
+    suspend fun transfer(
+        email: String,
+        receipentEmail: String,
+        total: Long,
+        fee: Long = floor(total.toDouble() / 100).toLong()
+    ) {
+        println(listOf(email, receipentEmail, total,  fee, total + fee, "Transfer"))
         repo.transfer(
-            TransferRequest(email, toId, amount, message)
+            TransferRequest(email, receipentEmail, total,  fee, total + fee, "Transfer")
         )
+
+    }
 
     suspend fun transaction(email: String) = repo.transaction(TransactionRequest(email))
 }
 
 interface TransferRepo {
-    @POST("transfer")
+    @POST("paymentgate")
     suspend fun transfer(@Body request: TransferRequest): TransferResponse
 
-    @POST("transaction")
+    @POST("transaction/all")
     suspend fun transaction(@Body request: TransactionRequest): List<Transaction>
 }
 
@@ -39,9 +49,11 @@ data class TransferResponse(
 
 data class TransferRequest(
     val email: String,
-    val to_id: String,
-    val amount: Number,
-    val message: String
+    val receipent_email: String,
+    val total: Number,
+    val fee: Number,
+    val subtotal: Number,
+    val payment_type: String
 )
 
 data class TransactionRequest(
@@ -50,16 +62,11 @@ data class TransactionRequest(
 
 data class Transaction(
     val _id: String,
-    val sender: String,
-    val receiver: String,
-    val type: String,
-    val amount: Long,
-    val success: Boolean,
+    val receipent_id: String,
+    val payment_type: String,
+    val total_transaction: Long,
+    val fee: Long,
+    val subtotal: Long,
     val date: Date,
-    val message: String,
-    val isSender: Boolean
-) {
-    override fun toString(): String {
-        return "{$_id, $sender, $receiver, $type, $amount, $success, $date, $message}"
-    }
-}
+    val is_sender: Boolean
+)

@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,10 +32,11 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.edselmustapa.mywallet.config.Setting
 import com.edselmustapa.mywallet.lib.PreferencesViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
- fun ChangeCardBottomSheet(
+fun ChangeCardBottomSheet(
     dismissRequest: () -> Unit,
     bottomSheetState: SheetState,
     cardImages: List<Pair<String, Int>>,
@@ -43,7 +45,9 @@ import com.edselmustapa.mywallet.lib.PreferencesViewModel
 ) {
     ModalBottomSheet(
         modifier = Modifier.fillMaxHeight(),
-        onDismissRequest = dismissRequest,
+        onDismissRequest = {
+            dismissRequest()
+        },
         sheetState = bottomSheetState,
     ) {
         Column(
@@ -52,6 +56,18 @@ import com.edselmustapa.mywallet.lib.PreferencesViewModel
                 .padding(10.dp)
         ) {
             var selectedCard by remember { mutableStateOf<String?>(null) }
+
+            Button(
+                onClick = {
+                    preferences.save(setting.copy(cardColor = selectedCard ?: "card_1"))
+                    dismissRequest()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = selectedCard != null
+            ) {
+                Text("Change Card")
+            }
+
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -86,16 +102,7 @@ import com.edselmustapa.mywallet.lib.PreferencesViewModel
                 Spacer(modifier = Modifier.weight(.5f))
             }
 
-            Button(
-                onClick = {
-                    preferences.save(setting.copy(cardColor = selectedCard ?: "card_1"))
-                    dismissRequest()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = selectedCard != null
-            ) {
-                Text("Change Card")
-            }
+
 
             Spacer(modifier = Modifier.height(20.dp))
         }

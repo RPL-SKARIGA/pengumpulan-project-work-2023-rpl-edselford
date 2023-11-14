@@ -40,15 +40,12 @@ class DiscussionService {
         topic: String,
         content: String,
         email: String,
-        asked: String,
     ) = repo.sendAnswer(
         DiscussionRequest(
-            "createDiscussion",
+            "submitDiscussion",
+            email = email,
             topic = topic,
             content = content,
-            email = email,
-            asked = asked
-
         )
     )
 }
@@ -71,7 +68,7 @@ interface DiscussionRepo {
 
     @POST("discussion")
     suspend fun createDiscussion(
-        @Body discussReq: DiscussionRequest = DiscussionRequest("createDiscussion")
+        @Body discussReq: DiscussionRequest = DiscussionRequest("submitDiscussion")
     ): AnswerResponse
 }
 
@@ -96,7 +93,8 @@ data class Discussion(
     val topic: String,
     val content: String,
     val owner: String,
-    val asked: String
+    val asked: Date,
+    val username: String
 )
 
 
@@ -106,7 +104,8 @@ data class Answer(
     val dateAnswered: Date,
     val content: String,
     val question_id: String,
-    val user_id: String
+    val user_id: String,
+    val email: String
 )
 
 data class AnswerResponse(

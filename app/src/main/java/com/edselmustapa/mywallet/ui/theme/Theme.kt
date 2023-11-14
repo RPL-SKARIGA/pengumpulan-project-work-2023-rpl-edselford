@@ -68,7 +68,27 @@ fun MyWalletTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = Typography.copy(
+//            displayLarge = defaultTypography.displayLarge.copy(fontFamily = AppFont.TitilliumWeb),
+//            displayMedium = defaultTypography.displayMedium.copy(fontFamily = AppFont.TitilliumWeb),
+//            displaySmall = defaultTypography.displaySmall.copy(fontFamily = AppFont.TitilliumWeb),
+//
+//            headlineLarge = defaultTypography.headlineLarge.copy(fontFamily = AppFont.TitilliumWeb),
+//            headlineMedium = defaultTypography.headlineMedium.copy(fontFamily = AppFont.TitilliumWeb),
+//            headlineSmall = defaultTypography.headlineSmall.copy(fontFamily = AppFont.TitilliumWeb),
+//
+//            titleLarge = defaultTypography.titleLarge.copy(fontFamily = AppFont.TitilliumWeb),
+//            titleMedium = defaultTypography.titleMedium.copy(fontFamily = AppFont.TitilliumWeb),
+//            titleSmall = defaultTypography.titleSmall.copy(fontFamily = AppFont.TitilliumWeb),
+//
+//            bodyLarge = defaultTypography.bodyLarge.copy(fontFamily = AppFont.TitilliumWeb),
+//            bodyMedium = defaultTypography.bodyMedium.copy(fontFamily = AppFont.TitilliumWeb),
+//            bodySmall = defaultTypography.bodySmall.copy(fontFamily = AppFont.TitilliumWeb),
+//
+//            labelLarge = defaultTypography.labelLarge.copy(fontFamily = AppFont.TitilliumWeb),
+//            labelMedium = defaultTypography.labelMedium.copy(fontFamily = AppFont.TitilliumWeb),
+//            labelSmall = defaultTypography.labelSmall.copy(fontFamily = AppFont.TitilliumWeb)
+        ),
         content = content
     )
 }

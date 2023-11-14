@@ -49,6 +49,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
@@ -57,6 +58,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavController
+import com.edselmustapa.mywallet.config.rupiah
 import com.edselmustapa.mywallet.lib.HomeViewModel
 import com.edselmustapa.mywallet.lib.TransferViewModel
 import com.edselmustapa.mywallet.service.User
@@ -68,6 +70,7 @@ import com.valentinilk.shimmer.shimmer
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
+import kotlin.math.floor
 import androidx.compose.material3.ListItem as Lists
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +97,6 @@ fun TransferScreen(
 
     val searchLoading by viewModel.searchLoading.collectAsState()
     val focusManager = LocalFocusManager.current
-    val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -111,7 +113,8 @@ fun TransferScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        if (amount.toLong() > wallet.wallet) {
+                        val amount_double = try { amount.toDouble() } catch(e: Exception) {0.0}
+                        if (floor(amount_double + amount_double / 100) > wallet.wallet) {
                             Toast.makeText(
                                 context,
                                 "Not enough money",
@@ -159,14 +162,7 @@ fun TransferScreen(
             modifier = Modifier
                 .padding(top = 100.dp)
                 .fillMaxSize()
-                .clickable(
-                    indication = null,
-                    interactionSource = remember {
-                        MutableInteractionSource()
-                    }
-                ) {
-                    focusRequester.requestFocus()
-                }
+
         ) {
             Row(
                 modifier = Modifier.padding(vertical = 20.dp, horizontal = 20.dp),
@@ -240,7 +236,18 @@ fun TransferScreen(
                         .copy(color = MaterialTheme.colorScheme.onBackground),
                     modifier = Modifier.fillMaxWidth(),
                     cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground)
-                )
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        it()
+                        if (selected != null) Text(
+                            selected!!.email,
+                            style = TextStyle(color = MaterialTheme.colorScheme.outline)
+                        )
+                    }
+                }
             }
             if (search.isNotEmpty() && listUsers.isNotEmpty() && selected == null) Column(
                 modifier = Modifier.fillMaxSize()
@@ -271,26 +278,41 @@ fun TransferScreen(
                 )
             }
             Divider()
-            Box(modifier = Modifier.padding(20.dp)) {
-                BasicTextField(
-                    value = message,
-                    onValueChange = { message = it },
-                    singleLine = false,
+            Column(modifier = Modifier.padding(20.dp)) {
+                Text(text = "Payment Detail", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    textStyle = MaterialTheme.typography.bodyLarge
-                        .copy(color = MaterialTheme.colorScheme.onBackground),
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
-                    decorationBox = {
-                        if (message.isEmpty()) Text(
-                            "Write message",
-                            style = MaterialTheme.typography.bodyLarge
-                                .copy(color = MaterialTheme.colorScheme.outline)
-                        )
-                        it()
-                    }
-                )
+                        .padding(vertical = 20.dp)
+                ) {
+                    Text(text = "Total Transaction")
+                    Text(text = rupiah(amount))
+                }
+                val amount_double = try { amount.toDouble() } catch(e: Exception) {0.0}
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp)
+                ) {
+                    Text(text = "Fee")
+                    Text(text = rupiah(floor(amount_double / 100)))
+                }
+                Divider()
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp)
+                ) {
+                    Text(text = "Subtotal")
+                    Text(text = rupiah(floor(amount_double + amount_double / 100)))
+                }
+
             }
         }
 
@@ -313,10 +335,9 @@ fun TransferScreen(
                             if (user != null) {
                                 user.email?.let { email ->
                                     viewModel.transfer(
-                                        amount = amount.toLong(),
                                         email = email,
-                                        toId = it._id,
-                                        message = message,
+                                        receipentEmail = it.email,
+                                        total = amount.toLong(),
                                         callback = {
                                             homeViewModel.refresh()
                                             navController.popBackStack()

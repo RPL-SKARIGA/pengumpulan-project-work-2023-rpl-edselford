@@ -3,6 +3,7 @@ package com.edselmustapa.mywallet.auth
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.widget.Toast
 import com.edselmustapa.mywallet.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
@@ -26,6 +27,7 @@ class GoogleAuthUiClient(
             ).await()
         } catch (e: Exception) {
             e.printStackTrace()
+            Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
             if (e is CancellationException) throw e
             null
         }

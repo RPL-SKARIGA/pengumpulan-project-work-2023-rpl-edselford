@@ -13,6 +13,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -77,6 +78,7 @@ class MainActivity : ComponentActivity() {
     private val githubAuth = GithubAuth()
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         Firebase.initialize(this)
         Firebase.appCheck.installAppCheckProviderFactory(
@@ -223,6 +225,7 @@ class MainActivity : ComponentActivity() {
                                         state = state,
                                         loading = loading,
                                         onGoogleSignInClick = {
+                                            Toast.makeText(context, "Sign in with google", Toast.LENGTH_SHORT).show()
                                             lifecycleScope.launch {
                                                 val signInIntentSender = googleAuthUiClient.signIn()
                                                 launcher.launch(

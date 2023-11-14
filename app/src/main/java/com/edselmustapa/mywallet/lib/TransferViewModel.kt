@@ -25,14 +25,13 @@ class TransferViewModel : ViewModel() {
 
     fun transfer(
         email: String,
-        toId: String,
-        amount: Number,
-        message: String,
+        receipentEmail: String,
+        total: Long,
         callback: suspend () -> Unit
     ) {
         viewModelScope.launch {
             _loading.value = true
-            transferService.transfer(email, toId, amount, message)
+            transferService.transfer(email, receipentEmail, total)
             callback()
             _loading.value = false
         }

@@ -91,10 +91,7 @@ class DiscussionViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             _sendLoading.value = true
-            val dateFormat = SimpleDateFormat("dd MMMM yyyy 'at' hh:mm")
-            dateFormat.timeZone = TimeZone.getTimeZone("GMT+7")
-
-            discussionService.createDiscussion(topic, content, email, dateFormat.format(Date()))
+            discussionService.createDiscussion(topic, content, email)
             refresh()
             callback()
             _sendLoading.value = false
