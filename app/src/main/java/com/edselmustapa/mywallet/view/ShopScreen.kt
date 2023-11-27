@@ -1,5 +1,6 @@
 package com.edselmustapa.mywallet.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,44 +18,29 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.edselmustapa.mywallet.R
+import com.edselmustapa.mywallet.component.ShopHome
+import com.edselmustapa.mywallet.component.ShopPLN
+import com.edselmustapa.mywallet.component.ShopPulsa
+import com.edselmustapa.mywallet.component.ShopVoucher
+import com.edselmustapa.mywallet.lib.HomeViewModel
+import com.edselmustapa.mywallet.lib.ShopViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShopScreen(
-    navController: NavController
+    navController: NavController,
+    id: String? = null,
+    viewModel: ShopViewModel,
+    homeViewModel: HomeViewModel,
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Shop") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxWidth()
-        ) {
-            ListItem(
-                headlineContent = { Text(text = "Pulsa") },
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_phone_iphone_24),
-                        contentDescription = ""
-                    )
-                },
-                trailingContent = {
-                    Icon(imageVector = Icons.Default.KeyboardArrowRight, contentDescription = "")
-                }
-            )
-            Divider()
-        }
+    when (id) {
+        "pulsa" -> ShopPulsa(navController, viewModel, homeViewModel)
+        "pln" -> ShopPLN(navController, viewModel, homeViewModel)
+        "game" -> ShopVoucher(navController, viewModel, homeViewModel)
+        else -> ShopHome(navController)
     }
+
 }

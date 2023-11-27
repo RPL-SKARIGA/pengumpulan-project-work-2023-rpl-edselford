@@ -3,6 +3,7 @@ package com.edselmustapa.mywallet.view
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +14,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -42,11 +45,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -58,6 +63,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavController
+import com.edselmustapa.mywallet.R
 import com.edselmustapa.mywallet.config.rupiah
 import com.edselmustapa.mywallet.lib.HomeViewModel
 import com.edselmustapa.mywallet.lib.TransferViewModel
@@ -199,11 +205,30 @@ fun TransferScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         it()
-                        Text(
-                            "Wallet: Rp." + DecimalFormat("#,###")
-                                .format(wallet.wallet),
-                            style = TextStyle(color = MaterialTheme.colorScheme.outline)
-                        )
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(50))
+                                .background(MaterialTheme.colorScheme.primaryContainer)
+                                .padding(10.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.align(Alignment.Center)
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(20.dp),
+                                    painter = painterResource(id = R.drawable.baseline_credit_card_24),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Text(
+                                    text = rupiah(wallet.wallet),
+                                    style = TextStyle(color = MaterialTheme.colorScheme.onPrimaryContainer)
+                                )
+
+                            }
+                        }
                     }
                 }
             }

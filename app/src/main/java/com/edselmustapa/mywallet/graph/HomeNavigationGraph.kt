@@ -38,13 +38,16 @@ import com.edselmustapa.mywallet.lib.ActivityViewModel
 import com.edselmustapa.mywallet.lib.DiscussionViewModel
 import com.edselmustapa.mywallet.lib.HomeViewModel
 import com.edselmustapa.mywallet.lib.PreferencesViewModel
+import com.edselmustapa.mywallet.lib.ShopViewModel
 import com.edselmustapa.mywallet.lib.TopupViewModel
 import com.edselmustapa.mywallet.lib.TransferViewModel
 import com.edselmustapa.mywallet.view.ActivityScreen
 import com.edselmustapa.mywallet.view.ChatScreen
 import com.edselmustapa.mywallet.view.CreateDiscussionScreen
 import com.edselmustapa.mywallet.view.DiscussionScreen
+import com.edselmustapa.mywallet.view.GameScreen
 import com.edselmustapa.mywallet.view.HomeScreen
+import com.edselmustapa.mywallet.view.ShopScreen
 import com.edselmustapa.mywallet.view.TopupScreen
 import com.edselmustapa.mywallet.view.TransferScreen
 
@@ -123,7 +126,13 @@ fun HomeNavigationGraph(
 
         ) {
             composable(Route.Dashboard.route) {
-                HomeScreen(navController, onLogoutClick, userData, homeViewModel, preferencesViewModel)
+                HomeScreen(
+                    navController,
+                    onLogoutClick,
+                    userData,
+                    homeViewModel,
+                    preferencesViewModel
+                )
 
             }
             composable(Route.Transfer.route) {
@@ -146,6 +155,31 @@ fun HomeNavigationGraph(
             }
             composable(Route.Activity.route) {
                 ActivityScreen(viewModel<ActivityViewModel>(), homeViewModel, navController)
+            }
+            composable(Route.Shop.route) {
+                ShopScreen(navController, null, viewModel<ShopViewModel>(), homeViewModel)
+            }
+            composable(
+                "${Route.Shop.route}/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ) {
+                ShopScreen(
+                    navController,
+                    it.arguments?.getString("id"),
+                    viewModel<ShopViewModel>(),
+                    homeViewModel
+                )
+            }
+            composable(
+                "${Route.Game.route}/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) {
+                GameScreen(
+                    navController,
+                    viewModel<ShopViewModel>(),
+                    homeViewModel,
+                    it.arguments?.getInt("id")
+                )
             }
         }
 

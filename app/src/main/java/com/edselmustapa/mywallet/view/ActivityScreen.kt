@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -19,17 +21,21 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.edselmustapa.mywallet.config.rupiah
@@ -50,7 +56,7 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import kotlin.math.round
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -61,9 +67,6 @@ fun ActivityScreen(
 ) {
     val activities by viewModel.activities.collectAsState()
 
-//    LaunchedEffect(Unit) {
-//        Firebase.auth.currentUser?.email?.let { viewModel.getActivities(it) }
-//    }
 
     BottomSheetScaffold(
         topBar = {
@@ -83,10 +86,30 @@ fun ActivityScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
-                activities.forEach {
+                activities.forEachIndexed { index, it ->
                     ListItem(
-                        headlineContent = { Text(SimpleDateFormat("HH:mm - dd MMM yyyy").format(it.date)) },
-                        supportingContent = { Text(text = it.activity) }
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp, vertical = 1.dp)
+                            .clip(
+                                when (index) {
+                                    0 -> RoundedCornerShape(
+                                        topStartPercent = 20,
+                                        topEndPercent = 20
+                                    )
+
+                                    activities.lastIndex -> RoundedCornerShape(
+                                        bottomStartPercent = 20,
+                                        bottomEndPercent = 20
+                                    )
+
+                                    else -> RoundedCornerShape(5)
+                                }
+                            ),
+                        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp) ),
+                        headlineContent = { Text(SimpleDateFormat("dd MMM yyyy").format(it.date)) },
+                        supportingContent = { Text(text = it.activity) },
+                        trailingContent = { Text(SimpleDateFormat("HH:mm").format(it.date)) }
+
                     )
                 }
             }

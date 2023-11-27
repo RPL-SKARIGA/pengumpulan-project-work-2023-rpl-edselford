@@ -50,7 +50,6 @@ class HomeViewModel : ViewModel() {
     val expense = _expense.asStateFlow()
 
     init {
-        Log.d("HOME", "OPEENNNNNNNN HOMMMMMMMEEEEEEEEEEE")
         refresh()
     }
 

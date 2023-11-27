@@ -56,7 +56,7 @@ fun HomeButtons(loading: Boolean, navController: NavController) {
             containerColor = lightColor("tertiary").first,
             contentColor = lightColor("tertiary").second,
             icon = { Icon(imageVector = Icons.Filled.ShoppingCart, contentDescription = "")},
-            onClick = {}
+            onClick = {navController.navigate(Route.Shop.route)}
         ),
         NavigationButton(
             text = "Activity",

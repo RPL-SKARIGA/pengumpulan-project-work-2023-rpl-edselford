@@ -41,6 +41,18 @@ sealed class Route(
         }
     )
 
+    object Shop : Route(
+        route = "shop",
+        title = "Shop",
+        icon = {}
+    )
+
+    object Game : Route(
+        route = "game",
+        title = "Voucher Game",
+        icon = {}
+    )
+
     object Activity : Route(
         route = "activity",
         title = "Activity",

@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -70,9 +71,7 @@ import com.edselmustapa.mywallet.lib.TopupViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+import java.text.DecimalFormat@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TopupScreen(
     navController: NavController,
@@ -102,48 +101,53 @@ fun TopupScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            FlowRow(
-                modifier = Modifier
-                    .padding(padding)
-                    .padding(5.dp)
+            BoxWithConstraints(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                listOf(
-                    20_000,
-                    50_000,
-                    100_000,
-                    200_000,
-                    300_000,
-                    500_000
-                ).forEachIndexed { index, price ->
-                    val colors = lightColor("$index")
-                    Box(
-                        modifier = Modifier
-                            .weight(.5f)
-                            .padding(vertical = 5.dp, horizontal = 5.dp)
-                            .clip(
-                                RoundedCornerShape(
-                                    animateIntAsState(
-                                        targetValue = if (nominal == price) 30 else 100,
-                                        label = ""
-                                    ).value
+                FlowRow(
+                    modifier = Modifier
+                        .padding(padding)
+                        .padding(5.dp),
+                    maxItemsInEachRow = if (maxWidth <= 500.dp) 2 else 3
+                ) {
+                    listOf(
+                        20_000,
+                        50_000,
+                        100_000,
+                        200_000,
+                        300_000,
+                        500_000
+                    ).forEachIndexed { index, price ->
+                        val colors = lightColor("$index")
+                        Box(
+                            modifier = Modifier
+                                .weight(.5f)
+                                .padding(vertical = 5.dp, horizontal = 5.dp)
+                                .clip(
+                                    RoundedCornerShape(
+                                        animateIntAsState(
+                                            targetValue = if (nominal == price) 30 else 100,
+                                            label = ""
+                                        ).value
+                                    )
+                                )
+                                .background(
+                                    if (nominal == price)
+                                        colors.first
+                                    else
+                                        MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
+                                )
+                                .clickable { nominal = price }
+                                .padding(vertical = 30.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.align(Alignment.Center),
+                                text = rupiah(price),
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    color = if (nominal == price) colors.second else MaterialTheme.colorScheme.onSurface
                                 )
                             )
-                            .background(
-                                if (nominal == price)
-                                    colors.first
-                                else
-                                    MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
-                            )
-                            .clickable { nominal = price }
-                            .padding(30.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.align(Alignment.Center),
-                            text = rupiah(price),
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                color = if (nominal == price) colors.second else MaterialTheme.colorScheme.onSurface
-                            )
-                        )
+                        }
                     }
                 }
             }
@@ -391,3 +395,4 @@ fun TopupScreen(
         }
 
 }
+
