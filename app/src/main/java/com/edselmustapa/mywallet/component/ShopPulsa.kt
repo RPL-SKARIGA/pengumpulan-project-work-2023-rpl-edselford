@@ -11,17 +11,14 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -36,7 +33,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -59,7 +55,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.platform.TextToolbar
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -250,12 +245,12 @@ fun ShopPulsa(
                                 .background(
                                     if (nominal == price)
                                         colors.first
-                                    else if (price >= wallet.wallet)
+                                    else if ((price + (price / 100)) >= wallet.wallet)
                                         MaterialTheme.colorScheme.surfaceColorAtElevation(7.dp)
                                     else
                                         MaterialTheme.colorScheme.background,
                                 )
-                                .then(if (price <= wallet.wallet) Modifier.clickable {
+                                .then(if ((price + (price / 100)) <= wallet.wallet) Modifier.clickable {
                                     nominal = price
                                 } else Modifier)
                                 .padding(
@@ -272,7 +267,7 @@ fun ShopPulsa(
                                         else MaterialTheme.colorScheme.onSurface
                                     )
                                 )
-                                if (price >= wallet.wallet) Text(
+                                if (price + (price / 100) >= wallet.wallet) Text(
                                     "Not enough money",
                                     style = TextStyle(color = MaterialTheme.colorScheme.onSurface),
                                     modifier = Modifier.alpha(.5f)

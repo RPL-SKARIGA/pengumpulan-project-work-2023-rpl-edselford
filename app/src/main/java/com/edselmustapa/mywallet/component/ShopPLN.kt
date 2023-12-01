@@ -63,7 +63,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.edselmustapa.mywallet.R
-import com.edselmustapa.mywallet.config.OPERATOR
 import com.edselmustapa.mywallet.config.lightColor
 import com.edselmustapa.mywallet.config.rupiah
 import com.edselmustapa.mywallet.lib.HomeViewModel
@@ -215,12 +214,12 @@ fun ShopPLN(
                             .background(
                                 if (nominal == price)
                                     colors.first
-                                else if (price >= wallet.wallet)
+                                else if ((price + (price / 100)) >= wallet.wallet)
                                     MaterialTheme.colorScheme.surfaceColorAtElevation(7.dp)
                                 else
                                     MaterialTheme.colorScheme.background,
                             )
-                            .then(if (price <= wallet.wallet) Modifier.clickable {
+                            .then(if ((price + (price / 100)) <= wallet.wallet) Modifier.clickable {
                                 nominal = price
                             } else Modifier)
                             .padding(vertical = 30.dp)
@@ -234,7 +233,7 @@ fun ShopPLN(
                                     else MaterialTheme.colorScheme.onSurface
                                 )
                             )
-                            if (price >= wallet.wallet) Text(
+                            if ((price + (price / 100)) >= wallet.wallet) Text(
                                 "Not enough money",
                                 style = TextStyle(color = MaterialTheme.colorScheme.onSurface),
                                 modifier = Modifier.alpha(.5f)

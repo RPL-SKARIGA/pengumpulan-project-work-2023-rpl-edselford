@@ -97,4 +97,18 @@ class DiscussionViewModel : ViewModel() {
             _sendLoading.value = false
         }
     }
+
+    fun deleteDiscussion(
+        discussion_id: String,
+        email: String,
+        callback: suspend () -> Unit
+    ) {
+        viewModelScope.launch {
+            _sendLoading.value = true
+            discussionService.deleteDiscussion(discussion_id = discussion_id, email = email)
+            refresh()
+            callback()
+            _sendLoading.value = false
+        }
+    }
 }

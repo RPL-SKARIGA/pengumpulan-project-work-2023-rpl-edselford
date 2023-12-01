@@ -22,15 +22,17 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.ListItem as Lists
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -49,7 +51,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -58,7 +59,6 @@ import com.edselmustapa.mywallet.lib.DiscussionViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dev.jeziellago.compose.markdowntext.MarkdownText
-import java.lang.Exception
 import java.text.SimpleDateFormat
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SimpleDateFormat")
@@ -116,7 +116,40 @@ fun ChatScreen(
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
-                )
+                ),
+                actions = {
+                    var dropdown by remember { mutableStateOf(false) }
+
+                    if (discuss.email == Firebase.auth.currentUser?.email)
+                        IconButton(onClick = { dropdown = true }) {
+                            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "")
+                        }
+
+                    DropdownMenu(
+                        expanded = dropdown,
+                        onDismissRequest = { dropdown = false }
+                    ) {
+                        DropdownMenuItem(
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = ""
+                                )
+                            },
+                            text = { Text("Delete Discussion") },
+                            onClick = {
+                                Firebase.auth.currentUser?.email?.let {
+                                    viewModel.deleteDiscussion(
+                                        discuss._id,
+                                        it
+                                    ) {
+                                        navController.popBackStack()
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
 
             )
         },
@@ -285,7 +318,8 @@ fun ChatScreen(
                                     style = MaterialTheme.typography.labelSmall
                                         .copy(
                                             fontWeight = FontWeight.Bold,
-                                            color = if (isSelf) lightTertiary.second else lightPrimary.second)
+                                            color = if (isSelf) lightTertiary.second else lightPrimary.second
+                                        )
                                 )
                             }
                         }

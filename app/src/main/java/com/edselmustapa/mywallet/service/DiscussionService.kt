@@ -28,24 +28,43 @@ class DiscussionService {
         dateAnswered: String,
         content: String,
         email: String
-    ) = repo.sendAnswer(
-        DiscussionRequest(
-            "sendAnswer",
-            questionId, email,
-            owner, dateAnswered, content
+    ) = try {
+        repo.sendAnswer(
+            DiscussionRequest(
+                action = "sendAnswer",
+                question_id = questionId,
+                email = email,
+                owner = owner,
+                dateAnswered = dateAnswered,
+                content = content
+            )
         )
-    )
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 
     suspend fun createDiscussion(
         topic: String,
         content: String,
         email: String,
-    ) = repo.sendAnswer(
+    ) = repo.createDiscussion(
         DiscussionRequest(
             "submitDiscussion",
             email = email,
             topic = topic,
             content = content,
+        )
+    )
+
+
+    suspend fun deleteDiscussion(
+        discussion_id: String,
+        email: String
+    ) = repo.deleteDiscussion(
+        DiscussionRequest(
+            "deleteDiscussion",
+            discussion_id = discussion_id,
+            email = email
         )
     )
 }
@@ -70,6 +89,11 @@ interface DiscussionRepo {
     suspend fun createDiscussion(
         @Body discussReq: DiscussionRequest = DiscussionRequest("submitDiscussion")
     ): AnswerResponse
+
+    @POST("discussion")
+    suspend fun deleteDiscussion(
+        @Body discussReq: DiscussionRequest = DiscussionRequest("deleteDiscussion")
+    ): DeleteResponse
 }
 
 
@@ -77,6 +101,7 @@ data class DiscussionRequest(
     val action: String,
 
     val question_id: String = "",
+    val discussion_id: String = "",
 
     val email: String = "",
     val owner: String = "",
@@ -86,7 +111,7 @@ data class DiscussionRequest(
     val topic: String = "",
     val asked: String = ""
 
-    )
+)
 
 data class Discussion(
     val _id: String,
@@ -94,7 +119,8 @@ data class Discussion(
     val content: String,
     val owner: String,
     val asked: Date,
-    val username: String
+    val username: String,
+    val email: String
 )
 
 
@@ -111,4 +137,8 @@ data class Answer(
 data class AnswerResponse(
     val acknowledged: Boolean,
     val insertedId: String
+)
+
+data class DeleteResponse(
+    val deleted: String
 )
